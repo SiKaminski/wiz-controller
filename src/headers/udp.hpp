@@ -3,6 +3,7 @@
 #define _UDP_CLIENT_HPP_
 
 #include <sys/socket.h>
+#include <netinet/in.h>
 
 namespace udp
 {
@@ -18,8 +19,8 @@ namespace udp
             char* mHostIP;
             int mSockFD;
             int mConnFD;
-
-
+            sockaddr_in mServerAddr;
+            sockaddr_in mCli;
     };
 }
 

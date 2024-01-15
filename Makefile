@@ -20,7 +20,6 @@ OBJS = $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRCS))
 all: $(OBJ) 
 	@mkdir -p $(LOG_DIR)
 	@mkdir -p $(@D)
-	@mkdir -p $(REDIRECT_DIR)
 	@echo ---- Generating $^ ---
 
 $(OBJ): $(OBJS)

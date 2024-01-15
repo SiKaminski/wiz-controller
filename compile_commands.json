@@ -1,0 +1,53 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-g",
+      "-Wall",
+      "-Wextra",
+      "-DDBG",
+      "-Isrc/headers",
+      "-c",
+      "-o",
+      "obj/bulb.o",
+      "src/bulb.cpp"
+    ],
+    "directory": "/home/simonk/Documents/github/room-lights",
+    "file": "/home/simonk/Documents/github/room-lights/src/bulb.cpp",
+    "output": "/home/simonk/Documents/github/room-lights/obj/bulb.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-g",
+      "-Wall",
+      "-Wextra",
+      "-DDBG",
+      "-Isrc/headers",
+      "-c",
+      "-o",
+      "obj/source.o",
+      "src/source.cpp"
+    ],
+    "directory": "/home/simonk/Documents/github/room-lights",
+    "file": "/home/simonk/Documents/github/room-lights/src/source.cpp",
+    "output": "/home/simonk/Documents/github/room-lights/obj/source.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-g",
+      "-Wall",
+      "-Wextra",
+      "-DDBG",
+      "-Isrc/headers",
+      "-c",
+      "-o",
+      "obj/udp.o",
+      "src/udp.cpp"
+    ],
+    "directory": "/home/simonk/Documents/github/room-lights",
+    "file": "/home/simonk/Documents/github/room-lights/src/udp.cpp",
+    "output": "/home/simonk/Documents/github/room-lights/obj/udp.o"
+  }
+]
