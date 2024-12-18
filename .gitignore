@@ -4,3 +4,5 @@ logs/
 
 room-lights
 nmap
+
+compile_commands.json
