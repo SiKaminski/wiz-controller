@@ -4,7 +4,7 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 
-namespace udp
+namespace UDP
 {
     Client::Client(const char* hostIP)
     {

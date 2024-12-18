@@ -5,7 +5,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
-namespace udp
+namespace UDP
 {
     class Client
     {
