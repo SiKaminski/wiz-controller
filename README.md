@@ -4,4 +4,6 @@
 
 Model -> Phillips Smart WIFI 40W E12 base
 
-## controller
+## Hardware
+
+TODO
