@@ -19,6 +19,8 @@
 #include <netdb.h>
 #include <netinet/ip_icmp.h>
 
+#include <pcap/pcap.h>
+
 // Packet constants
 // ping packet size
 #define PING_PKT_S 64
@@ -73,33 +75,44 @@ char* ReverseDnsLookup(char* ipAddr)
 
 int main(int argc, char** argv)
 {
-    // int sockfd;
-    char* ipAddr;
-    char* reverseHostname;
-    sockaddr_in addrConn;
-    // int addrLen = sizeof(addrConn);
-    // char netBuf[NI_MAXHOST];
-
-    for (int i = 1; i < 255; ++i) {
-        char ip[80];
-        sprintf(ip, "192.168.1.%d", i);
-        printf("----- %s -----\n", ip);
-
-        ipAddr = DnsLookup(ip, &addrConn);
-        if (ipAddr == NULL) {
-            printf("DNS lookup failed... could not resolve hostname\n");
-            continue;
+    FILE* pin = popen("nmap -sn 123 192.168.1.0/24","r");
+    char line[1024];
+    if (pin) {
+        while (!feof(pin)) {
+            fgets(line, 100, pin);
+            printf("%s", line);
         }
 
-        reverseHostname = ReverseDnsLookup(ipAddr);
-        if (reverseHostname == NULL) {
-            printf("DNS lookup failed... could not resolve hostname\n");
-            continue;
-        }
+        pclose(pin);
+    } ;
 
-        printf("Attempting to connect to '%s' IP: %s\n", ip, ipAddr);
-        printf("%s\n", ip);
-    }
+    // // int sockfd;
+    // char* ipAddr;
+    // char* reverseHostname;
+    // sockaddr_in addrConn;
+    // // int addrLen = sizeof(addrConn);
+    // // char netBuf[NI_MAXHOST];
+
+    // for (int i = 1; i < 255; ++i) {
+    //     char ip[80];
+    //     sprintf(ip, "192.168.1.%d", i);
+    //     printf("----- %s -----\n", ip);
+
+    //     ipAddr = DnsLookup(ip, &addrConn);
+    //     if (ipAddr == NULL) {
+    //         printf("DNS lookup failed... could not resolve hostname\n");
+    //         continue;
+    //     }
+
+    //     reverseHostname = ReverseDnsLookup(ipAddr);
+    //     if (reverseHostname == NULL) {
+    //         printf("DNS lookup failed... could not resolve hostname\n");
+    //         continue;
+    //     }
+
+    //     printf("Attempting to connect to '%s' IP: %s\n", ip, ipAddr);
+    //     printf("%s\n", ip);
+    // }
 
     return 0;
 }
