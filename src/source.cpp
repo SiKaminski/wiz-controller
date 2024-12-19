@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <fcntl.h>
-#include <signal.h>
+// #include <signal.h>
 #include <time.h>
 
 #include <sys/types.h>
@@ -53,19 +53,53 @@ char* DnsLookup(char* addrHost, sockaddr_in* addrConn)
 // Resolve the reverse lookup of the hostname
 char* ReverseDnsLookup(char* ipAddr)
 {
+    sockaddr_in tmpAddr;
+    socklen_t len;
+    char buf[NI_MAXHOST];
+    char* retBuf;
 
+    tmpAddr.sin_family = AF_INET;
+    tmpAddr.sin_addr.s_addr = inet_addr(ipAddr);
+    len = sizeof(sockaddr_in);
+    
+    // Not able to resolve reverse lookup of hostname
+    if (getnameinfo((sockaddr*)&tmpAddr, len, buf, sizeof(buf), NULL, 0, NI_NAMEREQD))
+        return NULL;
+
+    retBuf = (char*)malloc((strlen(buf) + 1) * sizeof(char));
+    strcpy(retBuf, buf);
+    return retBuf;
 }
 
 int main(int argc, char** argv)
 {
-    int sockfd;
+    // int sockfd;
     char* ipAddr;
     char* reverseHostname;
     sockaddr_in addrConn;
-    int addrLen = sizeof(addrConn);
-    char netBuf[NI_MAXHOST];
+    // int addrLen = sizeof(addrConn);
+    // char netBuf[NI_MAXHOST];
 
+    for (int i = 1; i < 255; ++i) {
+        char ip[80];
+        sprintf(ip, "192.168.1.%d", i);
+        printf("----- %s -----\n", ip);
 
+        ipAddr = DnsLookup(ip, &addrConn);
+        if (ipAddr == NULL) {
+            printf("DNS lookup failed... could not resolve hostname\n");
+            continue;
+        }
+
+        reverseHostname = ReverseDnsLookup(ipAddr);
+        if (reverseHostname == NULL) {
+            printf("DNS lookup failed... could not resolve hostname\n");
+            continue;
+        }
+
+        printf("Attempting to connect to '%s' IP: %s\n", ip, ipAddr);
+        printf("%s\n", ip);
+    }
 
     return 0;
 }
