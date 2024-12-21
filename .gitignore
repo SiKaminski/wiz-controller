@@ -1,8 +1,8 @@
 .cache/
 obj/
 logs/
+bin/
 
 room-lights
-nmap
 
 compile_commands.json
