@@ -1,5 +1,5 @@
 #File Directory things (might be overkill idk yet)
-INCLUDE = -I$(SRC_DIR)/headers
+INCLUDE = -I$(SRC_DIR)/headers -I/usr/local/include/
 SRC_DIR = src
 OBJ_DIR = obj
 LOG_DIR = logs
@@ -7,7 +7,7 @@ LOG_DIR = logs
 #Compiler and linker things
 CC = g++
 CCFLAGS = -g -Wall -Wextra -DDBG 
-LDFLAGS = -lcap
+LDFLAGS = -L/usr/local/lib/ -ljansson
 
 rwildcard=$(foreach d,$(wildcard $(1:=/*)),$(call rwildcard,$d,$2) $(filter $(subst *,%,$2),$d))
 
@@ -24,7 +24,7 @@ all: $(OBJ)
 $(OBJ): $(OBJS)
 	@echo ---- Linking $^ ----
 	@mkdir -p $(@D)
-	$(CC) $^ -o $@
+	$(CC) $^ -o $@ $(LDFLAGS)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 	@echo ---- Compiling $^ ----
