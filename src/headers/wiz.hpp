@@ -4,6 +4,10 @@
 
 namespace Wiz
 {
+    enum CMD {
+
+    };
+
     class Controller
     {
         public:

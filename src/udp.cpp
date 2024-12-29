@@ -1,36 +1,53 @@
 #include "udp.hpp"
-#include <iostream>
-#include <strings.h>
-#include <sys/socket.h>
+
 #include <arpa/inet.h>
+
+constexpr int UDP_REQUEST_TIMEOUT {2};
+constexpr int MAXLINE {4096};
 
 namespace UDP
 {
-    Client::Client(const char* hostIP)
+    Socket::Socket()
     {
-        mHostIP = (char*)hostIP;
+        InitSocket();
+    }
 
-        mSockFD = socket(AF_INET, SOCK_STREAM, 0);
-        if (mSockFD == -1) {
-            std::cerr << "Socket creation failed\n";       
-            exit(-1);
+    Socket::~Socket()
+    {
+
+    }
+
+    std::string Socket::SendUdpCommand(const std::string& msg, 
+            const std::string& targetIP, const u_int16_t port, 
+            std::string& broadcastIP) 
+    {
+        
+    }
+
+    bool Socket::InitSocket()
+    {
+        // Create socket
+        mBroadcastSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+        if (mBroadcastSocket < 0) {
+            perror("socket");
+            return false;
         }
 
-        bzero(&mServerAddr, sizeof(mServerAddr));
+        int permission = 1;
+        if (setsockopt(mBroadcastSocket, SOL_SOCKET, SO_BROADCAST, (void*) &permission, sizeof(permission)) < 0) {
+            perror("setsockopt: SO_BROADCAST");
+            return false;
+        }
 
-        // Assign IP and port
-        mServerAddr.sin_family = AF_INET;
-        mServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
-        mServerAddr.sin_port = 8080;
+        timeval tv;
+        tv.tv_sec = UDP_REQUEST_TIMEOUT;
+        tv.tv_usec = 0;
+        if (setsockopt(mBroadcastSocket, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv)) < 0) {
+            perror("setsockopt: SO_RCVTIMEO");
+            return false;
+        }
 
-    }
-
-    Client::~Client()
-    {
-
-    }
-
-    void Client::Initialize()
-    {
+        printf("UDP Socket initialized");
+        return true;
     }
 }

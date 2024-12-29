@@ -4,7 +4,7 @@ namespace Wiz
 {
     Controller::Controller()
     {
-
+        
     }
 
     Controller::~Controller()

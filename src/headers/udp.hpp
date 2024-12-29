@@ -2,25 +2,26 @@
 #ifndef _UDP_CLIENT_HPP_
 #define _UDP_CLIENT_HPP_
 
-#include <sys/socket.h>
-#include <netinet/in.h>
+#include <string>
 
 namespace UDP
 {
-    class Client
+    class Socket
     {
         public:
-            Client(const char* hostIP);
-            ~Client();
+            Socket();
+            ~Socket();
 
-            void Initialize();
+            std::string SendUdpCommand(
+                    const std::string& msg,
+                    const std::string& targetIP,
+                    const u_int16_t port,
+                    std::string& broadcastIP
+                    );
 
         private:
-            char* mHostIP;
-            int mSockFD;
-            int mConnFD;
-            sockaddr_in mServerAddr;
-            sockaddr_in mCli;
+            bool InitSocket();
+            int mBroadcastSocket;
     };
 }
 
