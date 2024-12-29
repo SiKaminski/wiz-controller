@@ -17,6 +17,14 @@ class Bulb
         std::string GetDeviceIP();
 
         std::string Discover(const std::string& ip);
+        std::string GetStatus();
+        std::string GetDeviceInfo();
+        std::string GetWifiConfig();
+        std::string GetSystemConfig();
+        std::string GetUserConfig();
+
+        std::string ToggleLight(bool state);
+        
 
     private:
         std::string ParseResponse(std::string jsonStr, std::string addlParams = "");

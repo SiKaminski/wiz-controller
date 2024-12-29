@@ -7,6 +7,8 @@
 // is 38899
 constexpr int WIZ_UDP_BROADCAST_PORT {38899};
 
+std::string EMPTY_STRING;
+
 Bulb::Bulb()
 {
     mPort = WIZ_UDP_BROADCAST_PORT;
@@ -34,10 +36,52 @@ std::string Bulb::Discover(const std::string& ip)
     json_object_set_new(root, "method", json_string("getDevInfo"));
 
     std::string msg = json_dumps(root, JSON_COMPACT);
-    printf("discover request %s to wiz", msg.c_str());
+    printf("discover request %s to wiz\n", msg.c_str());
     std::string devIP = "yes";
     auto resp = mSocket.SendUdpCommand(msg, ip, mPort, devIP);
     return ParseResponse(resp, devIP);
+}
+
+std::string Bulb::GetStatus()
+{
+
+}
+
+std::string Bulb::GetDeviceInfo()
+{
+
+}
+
+std::string Bulb::GetWifiConfig()
+{
+
+}
+
+std::string Bulb::GetSystemConfig()
+{
+
+}
+
+std::string Bulb::GetUserConfig()
+{
+
+}
+
+std::string Bulb::ToggleLight(bool state)
+{
+    json_t* root = json_object();
+    json_object_set_new(root, "id", json_integer(1));
+    json_object_set_new(root, "method", json_string("setState"));
+
+    json_t* data = json_object();
+    json_object_set_new(data, "state", json_boolean(state));
+    json_object_set_new(root, "params", data);
+
+    std::string msg = json_dumps(root, JSON_COMPACT);
+    printf("Light turning [%s]\n", (state ? "ON" : "OFF"));
+    printf("toggleLight request %s to wiz", msg.c_str());
+    auto resp = mSocket.SendUdpCommand(msg, mDevIP, mPort, EMPTY_STRING);
+    return ParseResponse(resp);
 }
 
 std::string Bulb::ParseResponse(std::string jsonStr, std::string addlParams)
@@ -49,18 +93,18 @@ std::string Bulb::ParseResponse(std::string jsonStr, std::string addlParams)
     json_error_t error;
     json_t* data = json_loads(jsonStr.c_str(), 0, &error);
     if (!data) {
-        printf("JSON parse on [%d]: %s", error.line, error.text);
+        printf("JSON parse on [%d]: %s\n", error.line, error.text);
         return "";
     }
 
     if (!json_is_object(data)) {
-        printf("JSON parsing error\nData is not an object");
+        printf("JSON parsing error\nData is not an object\n");
         return "";
     }
 
     json_t* res = json_object_get(data, "result");
     if (!res || !json_is_object(res)) {
-        printf("JSON parsing error\nResult is not an object");
+        printf("JSON parsing error\nResult is not an object\n");
         return "";
     }
 
@@ -81,6 +125,6 @@ std::string Bulb::ParseResponse(std::string jsonStr, std::string addlParams)
 
     json_object_set_new(root, "bulb_response", dataObj);
     std::string output = json_dumps(root, JSON_INDENT(4));
-    printf("%s", output.c_str());
+    printf("%s\n", output.c_str());
     return output;
 }

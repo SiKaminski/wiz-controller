@@ -3,27 +3,29 @@
 #include <string>
 #include <stdio.h>
 
+constexpr int BULB_COUNT {4};
+
 int main(int argc, char** argv)
 {
-    Bulb bulb;
+    // This is a bad way of doing this
+    // Eventually I would like to find the leds automatically and ask the
+    // user if the ip addresses look correct
+    //
+    // For now I know what the IP addresses of the bulbs are so I am going to
+    // do this simply to continue working on the main functionality of the
+    // program
+    Bulb bulbs[BULB_COUNT];
 
-    /* 
-        For now I am going to hardcode one of these ip addresses
-        that returned as WIZ devices after running the following command
-        nmap -p 38899 -sU 192.168.1.0/24
+    bulbs[0].SetDeviceIP("192.168.1.33");
+    bulbs[1].SetDeviceIP("192.168.1.34");
+    bulbs[2].SetDeviceIP("192.168.1.35");
+    bulbs[3].SetDeviceIP("192.168.1.36");
 
-        192.168.1.34
-        192.168.1.35
-        192.168.1.36
-        192.168.1.46
-    */
-    std::string devIP = "192.168.1.34";
-    bulb.SetDeviceIP(devIP);
+    for (int i = 0; i < BULB_COUNT; i++) {
+        bulbs[i].Discover(bulbs[i].GetDeviceIP());
+    }
 
-    devIP = bulb.GetDeviceIP();
-    printf("Device IP: %s\n", devIP.c_str());
-
-    bulb.Discover(devIP);
+    bulbs[0].ToggleLight(1);
 
     return 0;
 }
