@@ -84,6 +84,26 @@ std::string Bulb::ToggleLight(bool state)
     return ParseResponse(resp);
 }
 
+std::string Bulb::SetBrightness(int brightness)
+{
+    // Brightness is out of bounds
+    if (brightness < 0 || brightness > 100)
+        return "Invalid";
+
+    json_t* root = json_object();
+    json_object_set_new(root, "id", json_integer(1));
+    json_object_set_new(root, "method", json_string("setPilot"));
+
+    json_t* data = json_object();
+    json_object_set_new(data, "dimming", json_integer(brightness));
+    json_object_set_new(root, "params", data);
+
+    std::string msg = json_dumps(root, JSON_COMPACT);
+    printf("toggleLight request %s to wiz", msg.c_str());
+    auto resp = mSocket.SendUdpCommand(msg, mDevIP, mPort, EMPTY_STRING);
+    return ParseResponse(resp);
+}
+
 std::string Bulb::ParseResponse(std::string jsonStr, std::string addlParams)
 {
     if (jsonStr.empty())

@@ -24,7 +24,8 @@ class Bulb
         std::string GetUserConfig();
 
         std::string ToggleLight(bool state);
-        
+        std::string SetBrightness(int brightness);
+        std::string SetRGB(ushort r, ushort g, ushort b);        
 
     private:
         std::string ParseResponse(std::string jsonStr, std::string addlParams = "");

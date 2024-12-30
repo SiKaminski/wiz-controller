@@ -24,20 +24,8 @@ int main(int argc, char** argv)
     bulbs[3].SetDeviceIP("192.168.1.36");
 
     for (int i = 0; i < BULB_COUNT; i++) {
-        bulbs[i].Discover(bulbs[i].GetDeviceIP());
+        bulbs[i].SetBrightness(50);
     }
-
-    bool state = false;
-
-    while (1) {
-        state = !state;
-        for (int i = 0; i < BULB_COUNT; i++) {
-            bulbs[i].Discover(bulbs[i].ToggleLight(state));
-        }
-
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-    }
-
 
     return 0;
 }
