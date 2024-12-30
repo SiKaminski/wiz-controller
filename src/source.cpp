@@ -1,6 +1,8 @@
 #include "bulb.hpp"
 
 #include <string>
+#include <chrono>
+#include <thread>
 #include <stdio.h>
 
 constexpr int BULB_COUNT {4};
@@ -25,7 +27,17 @@ int main(int argc, char** argv)
         bulbs[i].Discover(bulbs[i].GetDeviceIP());
     }
 
-    bulbs[0].ToggleLight(1);
+    bool state = false;
+
+    while (1) {
+        state = !state;
+        for (int i = 0; i < BULB_COUNT; i++) {
+            bulbs[i].Discover(bulbs[i].ToggleLight(state));
+        }
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    }
+
 
     return 0;
 }
