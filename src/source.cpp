@@ -22,7 +22,7 @@ int main(int argc, char** argv)
     // bulbs[1].SetDeviceIP("192.168.1.34");
     // bulbs[2].SetDeviceIP("192.168.1.35");
     // bulbs[3].SetDeviceIP("192.168.1.36");
-    //
+
     Bulb bulbs[3];
 
     bulbs[0].SetDeviceIP("192.168.1.19");
@@ -39,17 +39,6 @@ int main(int argc, char** argv)
 
         toggle = !toggle;
     }
-    
-    
-    // bool toggle = false;
-    // while (1) {
-    //     for (int i = 0; i < 3; i++) {
-    //         bulbs[i].ToggleLight(toggle);
-    //     }
-
-    //     toggle = !toggle;
-    // }
-    
 
     return 0;
 }

@@ -15,18 +15,14 @@ namespace UDP
         InitSocket();
     }
 
-    Socket::~Socket()
-    {
-
-    }
+    Socket::~Socket() { }
 
     std::string Socket::SendUdpCommand(const std::string& msg, 
             const std::string& targetIP, const u_int16_t port, 
             std::string& broadcastIP) 
     {
-        if (mBroadcastSocket < 0) {
+        if (mBroadcastSocket < 0)
             InitSocket();
-        }
         
         // Set up a socket for the bulb using passed in IP arguments
         sockaddr_in ipAddr;
