@@ -104,6 +104,30 @@ std::string Bulb::SetBrightness(int brightness)
     return ParseResponse(resp);
 }
 
+std::string Bulb::SetRGB(ushort r, ushort g, ushort b)
+{
+    // Check if rgb values are in bound
+    if (!ColorInBound(r) || !ColorInBound(g) || !ColorInBound(b))
+        return "Invalid";
+
+    json_t* root = json_object();
+    json_object_set_new(root, "id", json_integer(1));
+    json_object_set_new(root, "method", json_string("setPilot"));
+
+    // json_t* data = json_object();
+    // json_object_set_new(root, "params", data);
+
+    // std::string msg = json_dumps(root, JSON_COMPACT);
+    // printf("toggleLight request %s to wiz", msg.c_str());
+    // auto resp = mSocket.SendUdpCommand(msg, mDevIP, mPort, EMPTY_STRING);
+    // return ParseResponse(resp);
+}
+
+bool Bulb::ColorInBound(ushort val)
+{
+    return val >= 0 && val <= 255;
+}
+
 std::string Bulb::ParseResponse(std::string jsonStr, std::string addlParams)
 {
     if (jsonStr.empty())

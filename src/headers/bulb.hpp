@@ -29,6 +29,7 @@ class Bulb
 
     private:
         std::string ParseResponse(std::string jsonStr, std::string addlParams = "");
+        bool ColorInBound(ushort val);
 
         std::string mDevIP;
         u_int16_t mPort;
