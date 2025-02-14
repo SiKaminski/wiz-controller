@@ -114,13 +114,16 @@ std::string Bulb::SetRGB(ushort r, ushort g, ushort b)
     json_object_set_new(root, "id", json_integer(1));
     json_object_set_new(root, "method", json_string("setPilot"));
 
-    // json_t* data = json_object();
-    // json_object_set_new(root, "params", data);
+    json_t* data = json_object();
+    json_object_set_new(data, "r", json_integer(r));
+    json_object_set_new(data, "g", json_integer(g));
+    json_object_set_new(data, "b", json_integer(b));
+    json_object_set_new(root, "params", data);
 
-    // std::string msg = json_dumps(root, JSON_COMPACT);
-    // printf("toggleLight request %s to wiz", msg.c_str());
-    // auto resp = mSocket.SendUdpCommand(msg, mDevIP, mPort, EMPTY_STRING);
-    // return ParseResponse(resp);
+    std::string msg = json_dumps(root, JSON_COMPACT);
+    printf("Change color request %s to wiz", msg.c_str());
+    auto resp = mSocket.SendUdpCommand(msg, mDevIP, mPort, EMPTY_STRING);
+    return ParseResponse(resp);
 }
 
 bool Bulb::ColorInBound(ushort val)

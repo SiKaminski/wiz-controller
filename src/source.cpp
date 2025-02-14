@@ -31,7 +31,8 @@ int main(int argc, char** argv)
 
 
     bulbs[0].ToggleLight(true);
-    bulbs[0].SetRGB(255, 0, 0);
+    bulbs[0].SetBrightness(100);
+    bulbs[0].SetRGB(255, 0, 255);
 
     return 0;
 }
