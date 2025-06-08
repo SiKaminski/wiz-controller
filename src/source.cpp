@@ -32,7 +32,20 @@ int main(int argc, char** argv)
 
     bulbs[0].ToggleLight(true);
     bulbs[0].SetBrightness(100);
-    bulbs[0].SetRGB(255, 0, 255);
+
+    while (1) {
+        for (int i = 0; i < 255; i+=10) {
+            bulbs[0].SetRGB(i, 0, 0);
+        }
+
+        for (int i = 0; i < 255; i+=10) {
+            bulbs[0].SetRGB(0, i, 0);
+        }
+
+        for (int i = 0; i < 255; i+=10) {
+            bulbs[0].SetRGB(0, 0, i);
+        }
+    }
 
     return 0;
 }
