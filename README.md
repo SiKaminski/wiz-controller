@@ -26,4 +26,8 @@ TODO
 
 ## Functionality
 
+## Possible Use Cases
+
+set up http server with api to connect third party apps to mess with room lights how ever it seems fot
+
 TODO
