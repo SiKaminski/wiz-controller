@@ -11,8 +11,9 @@
 #include <string>
 #include <vector>
 #include <sys/time.h>
-
 #include <string>
+
+#include "inactivity_timer.hpp"
 
 
 namespace Wiz
@@ -36,7 +37,7 @@ namespace Wiz
     {
         using namespace std::chrono;
 
-        int sock = socket(AF_INET, SOCK_DGRAM, 0);
+        int sock = socket(AF_INET, SOCK_DGRAM|SOCK_NONBLOCK, 0);
 
         int broadcastEnable = 1;
         setsockopt(sock, SOL_SOCKET, SO_BROADCAST, &broadcastEnable, sizeof(broadcastEnable));
@@ -54,12 +55,10 @@ namespace Wiz
         sockaddr_in sender{};
         socklen_t senderLen = sizeof(sender);
 
-        auto lastChangeTime = steady_clock::now();
-        const auto timeout = seconds(2);
-
-
         std::vector<json_t*> jsonRepsonses;
         std::cout << "Waiting for response\n";
+        InactivityTimer timer(seconds(2));
+
         while (true) {
             bool foundNewDevice = false;
 
@@ -78,16 +77,8 @@ namespace Wiz
             }
 
             if (foundNewDevice) {
-                lastChangeTime = steady_clock::now();
-            }
-
-            // Check for inactivity
-            auto now = steady_clock::now();
-            auto elapsed = duration_cast<seconds>(now - lastChangeTime);
-            std::cout << elapsed << "\n";
-
-            // Done scanning
-            if (elapsed >= timeout) {
+                timer.reset();
+            } else if (timer.expired()) {
                 std::cout << "done scanning\n";
                 break;
             }
