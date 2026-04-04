@@ -1,37 +1,17 @@
-#File Directory things (might be overkill idk yet)
-INCLUDE = -I$(SRC_DIR)/headers -I/usr/local/include/
-SRC_DIR = src
-OBJ_DIR = obj
-LOG_DIR = logs
 
-#Compiler and linker things
-CC = g++
-CCFLAGS = -g -Wall -Wextra -DDBG 
-LDFLAGS = -L/usr/local/lib/ -ljansson
+.PHONY: all
+all: build
+	./build/room-lights
 
-rwildcard=$(foreach d,$(wildcard $(1:=/*)),$(call rwildcard,$d,$2) $(filter $(subst *,%,$2),$d))
+.PHONY: build
+build:
+	cmake -S . -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DENABLE_TRACING=1
+	cmake --build build
 
-#Essential files and groups
-OBJ = room-lights 
-SRCS = $(call rwildcard, $(SRC_DIR), *.cpp)
-OBJS = $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRCS))
+.PHONY: link_compile_commands
+link_compile_commands: build
+	ln -s build/compile_commands.json .
 
-all: $(OBJ) 
-	@mkdir -p $(LOG_DIR)
-	@mkdir -p $(@D)
-	@echo ---- Generating $^ ---
-
-$(OBJ): $(OBJS)
-	@echo ---- Linking $^ ----
-	@mkdir -p $(@D)
-	$(CC) $^ -o $@ $(LDFLAGS)
-
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
-	@echo ---- Compiling $^ ----
-	@mkdir -p $(@D)
-	$(CC) $(CCFLAGS) $(INCLUDE) -c $< -o $@
-
+.PHONY: clean
 clean:
-	rm $(OBJ)
-	rm -rf $(OBJ_DIR)/
-	rm -rf $(LOG_DIR)/
+	rm -rf ./build/

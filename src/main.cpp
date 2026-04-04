@@ -1,18 +1,9 @@
-#include "bulb.hpp"
-
-#include <iostream>
-#include <cstring>
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <unistd.h>
 #include <string>
-#include <chrono>
-#include <thread>
-#include <stdio.h>
 
 #include "wiz.hpp"
-
-constexpr int BULB_COUNT {1};
 
 int main(int argc, char** argv)
 {

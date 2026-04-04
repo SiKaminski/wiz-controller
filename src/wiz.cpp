@@ -1,17 +1,19 @@
 #include "wiz.hpp"
 
 #include <bits/types/timer_t.h>
-#include <ctime>
+#include <chrono>
 #include <iostream>
 #include <cstring>
 #include <arpa/inet.h>
 #include <sys/socket.h>
+#include <thread>
 #include <unistd.h>
 #include <string>
 #include <vector>
 #include <sys/time.h>
 
 #include <string>
+
 
 namespace Wiz
 {
@@ -32,6 +34,8 @@ namespace Wiz
 
     std::vector<json_t*> Controller::SearchForBulbs() 
     {
+        using namespace std::chrono;
+
         int sock = socket(AF_INET, SOCK_DGRAM, 0);
 
         int broadcastEnable = 1;
@@ -50,24 +54,45 @@ namespace Wiz
         sockaddr_in sender{};
         socklen_t senderLen = sizeof(sender);
 
-        std::cout << "Waiting for response\n";
+        auto lastChangeTime = steady_clock::now();
+        const auto timeout = seconds(2);
+
 
         std::vector<json_t*> jsonRepsonses;
-        bool scanning = true;
-        while (scanning) {
+        std::cout << "Waiting for response\n";
+        while (true) {
+            bool foundNewDevice = false;
+
             int len = recvfrom(sock, buf, sizeof(buf) - 1, 0, (sockaddr*)&sender, &senderLen);
             if (len > 0) { 
+                foundNewDevice = true;
                 buf[len] = '\0';
-
-                json_t* resp = json_pack(buf);
-                jsonRepsonses.push_back(resp);
 
                 std::cout << "Found bulb at "
                           << inet_ntoa(sender.sin_addr)
                           << "\nResponse: "
                           << buf << "\n\n";
+
+                json_t* resp = json_pack(buf);
+                jsonRepsonses.push_back(resp);
             }
-            scanning = false;
+
+            if (foundNewDevice) {
+                lastChangeTime = steady_clock::now();
+            }
+
+            // Check for inactivity
+            auto now = steady_clock::now();
+            auto elapsed = duration_cast<seconds>(now - lastChangeTime);
+            std::cout << elapsed << "\n";
+
+            // Done scanning
+            if (elapsed >= timeout) {
+                std::cout << "done scanning\n";
+                break;
+            }
+
+            std::this_thread::sleep_for(milliseconds(200));
         }
 
         close(sock);
