@@ -11,6 +11,7 @@
 #include <vector>
 #include <sys/time.h>
 #include <string>
+#include <jansson.h>
 
 #include "inactivity_timer.hpp"
 #include "globals.hpp"
@@ -21,7 +22,11 @@ namespace Wiz
 {
     Controller::Controller()
     {
-        SearchForBulbs();
+        mSearchResponses = SearchForBulbs();
+
+        for (json_t* resp : mSearchResponses) {
+            // json_object_get(resp, )
+        }
     }
 
     Controller::Controller(std::string devicePrefix)
@@ -68,11 +73,15 @@ namespace Wiz
                 foundNewDevice = true;
                 buf[len] = '\0';
 
+                std::string devIP = inet_ntoa(sender.sin_addr);
                 Global::logger.Log(TRACE, "Found bulb at %s\nResponse: %s",
-                        inet_ntoa(sender.sin_addr),
+                        devIP.c_str(),
                         buf);
 
+
                 json_t* resp = json_pack(buf);
+                json_string_set(json_string("ip"), devIP.c_str());
+                
                 jsonRepsonses.push_back(resp);
             }
 
@@ -101,4 +110,22 @@ namespace Wiz
         return allBulbs;
     }
 
+    void Controller::ConfirmBulbChoices()
+    {
+        Global::logger.Log(WARNING, "ConfirmBulbChoices: Not implemented");
+    }
+
+    // FIXME
+    void Controller::FilterDevicesByHomeID(std::string homeId)
+    {
+        // mHomeId = homeId;
+        Global::logger.Log(WARNING, "FilterDevicesByHomeID: Not implemented");
+    }
+
+    // FIXME
+    void Controller::FilterDevicesByRoomID(std::string roomId)
+    {
+        // mRoomId = roomId;
+        Global::logger.Log(WARNING, "FilterDevicesByRoomID: Not implemented");
+    }
 } // Namespace Wiz

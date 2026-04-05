@@ -10,7 +10,22 @@ using namespace SKUTIL;
 
 void InitWizControllerPrefixed(OPT int inputCount, OPT char** inputVals)
 {
-    Global::controller = new Wiz::Controller(inputVals[0]);
+    Global::wizController = new Wiz::Controller(inputVals[0]);
+}
+
+void FilterDevicesWithHomeID(OPT int inputCount, OPT char** inputVals)
+{
+    Global::wizController->FilterDevicesByHomeID(inputVals[0]);
+}
+
+void FilterDevicesWithRoomID(OPT int inputCount, OPT char** inputVals)
+{
+    Global::wizController->FilterDevicesByRoomID(inputVals[0]);
+}
+
+void ConfirmBulbSelection(OPT int inputCount, OPT char** inputVals)
+{
+    Global::wizController->ConfirmBulbChoices();
 }
 
 SK_VEC<Flag> gFlags {
@@ -18,14 +33,34 @@ SK_VEC<Flag> gFlags {
         'p',
         "prefix",
         "Device prefix to scan for",
-        2,
+        1,
         InitWizControllerPrefixed,
+    },
+    {
+        'i',
+        "home-id",
+        "Home id for the lights, if provided the controller will contain only lights from that home id",
+        1,
+        FilterDevicesWithHomeID,
+    },
+    {
+        'r',
+        "room-id",
+        "Room id for the lights, if provided the controller will contain only lights from that room id",
+        1,
+        FilterDevicesWithRoomID,
+    },
+    {
+        'c',
+        "confirm-bulbs",
+        "Gives the choice to confirm which scanned bulbs to communicate with",
+        0,
+        ConfirmBulbSelection,
     },
 };
 
 void initFlags(int argc, char** argv)
 {
-    
     FlagParser parser(&gFlags);
     parser.ParseFlags(argc, argv);
 }
@@ -38,8 +73,8 @@ int main(int argc, char** argv)
 
     initFlags(argc, argv);
 
-    if (Global::controller == nullptr) {
-        Global::controller = new Wiz::Controller();
+    if (Global::wizController == nullptr) {
+        Global::wizController = new Wiz::Controller();
     }
 
     // while (1) {

@@ -7,10 +7,8 @@
 
 std::string EMPTY_STRING;
 
-Bulb::Bulb()
-{
-    mPort = Global::WIZ_UDP_BROADCAST_PORT;
-}
+Bulb::Bulb(UDP::Socket socket, std::string ip, u_int16_t port) :
+    mSocket(socket), mDevIP(ip), mPort(port) {}
 
 Bulb::~Bulb()
 {
@@ -42,27 +40,27 @@ std::string Bulb::Discover(const std::string& ip)
 
 std::string Bulb::GetStatus()
 {
-
+    return "";
 }
 
 std::string Bulb::GetDeviceInfo()
 {
-
+    return "";
 }
 
 std::string Bulb::GetWifiConfig()
 {
-
+    return "";
 }
 
 std::string Bulb::GetSystemConfig()
 {
-
+    return "";
 }
 
 std::string Bulb::GetUserConfig()
 {
-
+    return "";
 }
 
 std::string Bulb::ToggleLight(bool state)

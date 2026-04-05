@@ -20,13 +20,18 @@ namespace Wiz
             Controller(std::string devicePrefix);
             ~Controller();
 
+            void ConfirmBulbChoices();
+            void FilterDevicesByHomeID(std::string homeId);
+            void FilterDevicesByRoomID(std::string roomId);
+        private:
             // Return bulb json response
             std::vector<json_t*> SearchForBulbs();
             std::vector<json_t*> SearchForBulbs(std::string devicePrefix);
 
-            void ConfirmBulbChoices();
-        private:
-           Bulb* mBulbs; 
+            std::vector<Bulb*> mBulbs; 
+            std::vector<json_t*> mSearchResponses;
+            std::string mHomeId; 
+            std::string mRoomId; 
     };
 }
 

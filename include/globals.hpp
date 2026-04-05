@@ -9,7 +9,7 @@ namespace Global
 {
     constexpr int WIZ_UDP_BROADCAST_PORT {38899};
 
-    inline Wiz::Controller* controller = nullptr;
+    inline Wiz::Controller* wizController = nullptr;
     inline Logger logger;
 }
 
