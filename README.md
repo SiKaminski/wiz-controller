@@ -9,25 +9,9 @@ finding WiZ lights on a network
 
 echo '{"method":"getPilot","params":{}}' | socat - UDP-DATAGRAM:255.255.255.255:38899,broadcast
 
+Use of a VPN may cause device scanning to work
+
 ## Dependencies
 
 jansson (https://github.com/akheron/jansson)
 
-jansson might be loaded under /usr/local/lib so making it work with the current
-build system make sure to run the following command
-
-```bash
-export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
-```
-
-## CLI Flags
-
-TODO
-
-## Functionality
-
-## Possible Use Cases
-
-set up http server with api to connect third party apps to mess with room lights how ever it seems fot
-
-TODO
