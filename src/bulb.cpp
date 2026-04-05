@@ -1,17 +1,15 @@
 #include "bulb.hpp"
 
 #include <jansson.h>
-#include <stdio.h>
 
-// According to random sources online, the port that the bulb uses to broadcast
-// is 38899
-constexpr int WIZ_UDP_BROADCAST_PORT {38899};
+#include "globals.hpp"
+
 
 std::string EMPTY_STRING;
 
 Bulb::Bulb()
 {
-    mPort = WIZ_UDP_BROADCAST_PORT;
+    mPort = Global::WIZ_UDP_BROADCAST_PORT;
 }
 
 Bulb::~Bulb()
@@ -36,7 +34,7 @@ std::string Bulb::Discover(const std::string& ip)
     json_object_set_new(root, "method", json_string("getDevInfo"));
 
     std::string msg = json_dumps(root, JSON_COMPACT);
-    printf("discover request %s to wiz\n", msg.c_str());
+    Global::logger.Log(INFO, "discover request %s to wiz\n", msg.c_str());
     std::string devIP = "yes";
     auto resp = mSocket.SendUdpCommand(msg, ip, mPort, devIP);
     return ParseResponse(resp, devIP);
@@ -78,8 +76,8 @@ std::string Bulb::ToggleLight(bool state)
     json_object_set_new(root, "params", data);
 
     std::string msg = json_dumps(root, JSON_COMPACT);
-    printf("Light turning [%s]\n", (state ? "ON" : "OFF"));
-    printf("toggleLight request %s to wiz", msg.c_str());
+    Global::logger.Log(INFO, "Light turning [%s]\n", (state ? "ON" : "OFF"));
+    Global::logger.Log(INFO, "toggleLight request %s to wiz", msg.c_str());
     auto resp = mSocket.SendUdpCommand(msg, mDevIP, mPort, EMPTY_STRING);
     return ParseResponse(resp);
 }
@@ -99,7 +97,7 @@ std::string Bulb::SetBrightness(int brightness)
     json_object_set_new(root, "params", data);
 
     std::string msg = json_dumps(root, JSON_COMPACT);
-    printf("toggleLight request %s to wiz", msg.c_str());
+    Global::logger.Log(INFO, "toggleLight request %s to wiz", msg.c_str());
     auto resp = mSocket.SendUdpCommand(msg, mDevIP, mPort, EMPTY_STRING);
     return ParseResponse(resp);
 }
@@ -121,7 +119,7 @@ std::string Bulb::SetRGB(ushort r, ushort g, ushort b)
     json_object_set_new(root, "params", data);
 
     std::string msg = json_dumps(root, JSON_COMPACT);
-    printf("Change color request %s to wiz", msg.c_str());
+    Global::logger.Log(INFO, "Change color request %s to wiz", msg.c_str());
     auto resp = mSocket.SendUdpCommand(msg, mDevIP, mPort, EMPTY_STRING);
     return ParseResponse(resp);
 }
@@ -140,18 +138,18 @@ std::string Bulb::ParseResponse(std::string jsonStr, std::string addlParams)
     json_error_t error;
     json_t* data = json_loads(jsonStr.c_str(), 0, &error);
     if (!data) {
-        printf("JSON parse on [%d]: %s\n", error.line, error.text);
+        Global::logger.Log(INFO, "JSON parse on [%d]: %s\n", error.line, error.text);
         return "";
     }
 
     if (!json_is_object(data)) {
-        printf("JSON parsing error\nData is not an object\n");
+        Global::logger.Log(INFO, "JSON parsing error\nData is not an object\n");
         return "";
     }
 
     json_t* res = json_object_get(data, "result");
     if (!res || !json_is_object(res)) {
-        printf("JSON parsing error\nResult is not an object\n");
+        Global::logger.Log(INFO, "JSON parsing error\nResult is not an object\n");
         return "";
     }
 
@@ -172,6 +170,6 @@ std::string Bulb::ParseResponse(std::string jsonStr, std::string addlParams)
 
     json_object_set_new(root, "bulb_response", dataObj);
     std::string output = json_dumps(root, JSON_INDENT(4));
-    printf("%s\n", output.c_str());
+    Global::logger.Log(INFO, "%s\n", output.c_str());
     return output;
 }

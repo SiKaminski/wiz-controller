@@ -2,7 +2,6 @@
 
 #include <bits/types/timer_t.h>
 #include <chrono>
-#include <iostream>
 #include <cstring>
 #include <arpa/inet.h>
 #include <sys/socket.h>
@@ -14,6 +13,8 @@
 #include <string>
 
 #include "inactivity_timer.hpp"
+#include "globals.hpp"
+#include "skutils/logger/logger.hpp"
 
 
 namespace Wiz
@@ -56,7 +57,7 @@ namespace Wiz
         socklen_t senderLen = sizeof(sender);
 
         std::vector<json_t*> jsonRepsonses;
-        std::cout << "Waiting for response\n";
+        Global::logger.Log(INFO, "Waiting for response");
         InactivityTimer timer(seconds(2));
 
         while (true) {
@@ -67,10 +68,9 @@ namespace Wiz
                 foundNewDevice = true;
                 buf[len] = '\0';
 
-                std::cout << "Found bulb at "
-                          << inet_ntoa(sender.sin_addr)
-                          << "\nResponse: "
-                          << buf << "\n\n";
+                Global::logger.Log(TRACE, "Found bulb at %s\nResponse: %s",
+                        inet_ntoa(sender.sin_addr),
+                        buf);
 
                 json_t* resp = json_pack(buf);
                 jsonRepsonses.push_back(resp);
@@ -79,7 +79,7 @@ namespace Wiz
             if (foundNewDevice) {
                 timer.reset();
             } else if (timer.expired()) {
-                std::cout << "done scanning\n";
+                Global::logger.Log(SUCCESS, "Done Scanning");
                 break;
             }
 
@@ -92,7 +92,13 @@ namespace Wiz
 
     std::vector<json_t*> Controller::SearchForBulbs(std::string devicePrefix) 
     {
-        return SearchForBulbs();
+        std::vector<json_t*> allBulbs = SearchForBulbs();
+
+        for (auto bulb : allBulbs) {
+            Global::logger.Log(INFO, "Bulb: %s", bulb);
+        }
+
+        return allBulbs;
     }
 
 } // Namespace Wiz
