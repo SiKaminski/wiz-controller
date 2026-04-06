@@ -20,18 +20,9 @@
 
 namespace Wiz
 {
-    Controller::Controller()
+    Controller::Controller(std::string devicePrefix) : mDevicePrefix(devicePrefix)
     {
-        mSearchResponses = SearchForBulbs();
-
-        for (json_t* resp : mSearchResponses) {
-            // json_object_get(resp, )
-        }
-    }
-
-    Controller::Controller(std::string devicePrefix)
-    {
-       SearchForBulbs(devicePrefix);
+        InitBulbs();
     }
 
     Controller::~Controller()
@@ -39,6 +30,18 @@ namespace Wiz
 
     }
 
+    void Controller::InitBulbs()
+    {
+       mSearchResponses = SearchForBulbs();
+
+       for (json_t* resp : mSearchResponses) {
+           const char* ip = json_dumps(resp, JSON_INDENT(2));
+           Global::logger.Log(INFO, ip); 
+
+       }
+    }
+
+    // TODO: Implement filtering by device prefix
     std::vector<json_t*> Controller::SearchForBulbs() 
     {
         using namespace std::chrono;
@@ -74,15 +77,17 @@ namespace Wiz
                 buf[len] = '\0';
 
                 std::string devIP = inet_ntoa(sender.sin_addr);
-                Global::logger.Log(TRACE, "Found bulb at %s\nResponse: %s",
-                        devIP.c_str(),
-                        buf);
 
+                json_error_t error;
+                json_t* root = json_loads(buf, 0, &error);
 
-                json_t* resp = json_pack(buf);
-                json_string_set(json_string("ip"), devIP.c_str());
-                
-                jsonRepsonses.push_back(resp);
+                if (!root) {
+                    Global::logger.Log(ERROR, "Error parsing json: %s", error.text);
+                    continue;
+                }
+
+                json_object_set_new(root, "ip", json_string(devIP.c_str()));
+                jsonRepsonses.push_back(root);
             }
 
             if (foundNewDevice) {
@@ -97,17 +102,6 @@ namespace Wiz
 
         close(sock);
         return jsonRepsonses;
-    }
-
-    std::vector<json_t*> Controller::SearchForBulbs(std::string devicePrefix) 
-    {
-        std::vector<json_t*> allBulbs = SearchForBulbs();
-
-        for (auto bulb : allBulbs) {
-            Global::logger.Log(INFO, "Bulb: %s", bulb);
-        }
-
-        return allBulbs;
     }
 
     void Controller::ConfirmBulbChoices()

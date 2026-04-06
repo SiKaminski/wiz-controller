@@ -1,7 +1,7 @@
 
 .PHONY: all
 all: build
-	./build/room-lights -i 20239796 -p ESP03 -c
+	./build/room-lights -p ESP03
 
 .PHONY: build
 build:

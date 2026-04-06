@@ -16,7 +16,6 @@ namespace Wiz
     class Controller
     {
         public:
-            Controller();
             Controller(std::string devicePrefix);
             ~Controller();
 
@@ -24,12 +23,14 @@ namespace Wiz
             void FilterDevicesByHomeID(std::string homeId);
             void FilterDevicesByRoomID(std::string roomId);
         private:
+            void InitBulbs();
+
             // Return bulb json response
             std::vector<json_t*> SearchForBulbs();
-            std::vector<json_t*> SearchForBulbs(std::string devicePrefix);
 
             std::vector<Bulb*> mBulbs; 
             std::vector<json_t*> mSearchResponses;
+            std::string mDevicePrefix;
             std::string mHomeId; 
             std::string mRoomId; 
     };

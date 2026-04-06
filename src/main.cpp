@@ -74,7 +74,7 @@ int main(int argc, char** argv)
     initFlags(argc, argv);
 
     if (Global::wizController == nullptr) {
-        Global::wizController = new Wiz::Controller();
+        Global::wizController = new Wiz::Controller("");
     }
 
     // while (1) {
