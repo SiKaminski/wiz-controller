@@ -10,7 +10,7 @@
 class Bulb
 {
     public:
-        Bulb(UDP::Socket socket, std::string ip, u_int16_t port);
+        Bulb(std::string ip, u_int16_t port);
         ~Bulb();
 
         void SetDeviceIP(const std::string& ip);
@@ -31,9 +31,9 @@ class Bulb
         std::string ParseResponse(std::string jsonStr, std::string addlParams = "");
         bool ColorInBound(ushort val);
 
-        UDP::Socket mSocket;
-        std::string mDevIP;
-        u_int16_t mPort;
+        UDP::Socket     mSocket;
+        std::string     mDevIP;
+        u_int16_t       mPort;
 };
 
 #endif // _BULB_HPP_

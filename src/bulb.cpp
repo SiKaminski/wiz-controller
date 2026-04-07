@@ -3,12 +3,16 @@
 #include <jansson.h>
 
 #include "globals.hpp"
+#include "udp.hpp"
 
 
 std::string EMPTY_STRING;
 
-Bulb::Bulb(UDP::Socket socket, std::string ip, u_int16_t port) :
-    mSocket(socket), mDevIP(ip), mPort(port) {}
+Bulb::Bulb(std::string ip, u_int16_t port) :
+    mDevIP(ip), mPort(port)
+{
+    mSocket = UDP::Socket();
+}
 
 Bulb::~Bulb()
 {

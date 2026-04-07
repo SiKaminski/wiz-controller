@@ -5,6 +5,8 @@
 #include <netinet/in.h>
 #include <string.h>
 
+#include "globals.hpp"
+
 constexpr int UDP_REQUEST_TIMEOUT {2};
 constexpr int MAXLINE {4096};
 
@@ -50,7 +52,7 @@ namespace UDP
             char str[INET_ADDRSTRLEN];
             inet_ntop(AF_INET, &(ipAddr.sin_addr), str, INET6_ADDRSTRLEN);
             broadcastIP = str;
-            printf("Broadcast IP: %s\n", broadcastIP.c_str());
+            Global::logger.Log(TRACE, "Broadcast IP: %s", broadcastIP.c_str());
         }
 
         return resp;
@@ -79,7 +81,7 @@ namespace UDP
             return false;
         }
 
-        printf("UDP Socket initialized\n");
+        Global::logger.Log(TRACE, "UDP Socket initialized");
         return true;
     }
 }

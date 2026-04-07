@@ -10,7 +10,7 @@ using namespace SKUTIL;
 
 void InitWizControllerPrefixed(OPT int inputCount, OPT char** inputVals)
 {
-    Global::wizController = new Wiz::Controller(inputVals[0]);
+    Global::wizController->FilterDevicesByModulePrefix(inputVals[0]);
 }
 
 void FilterDevicesWithHomeID(OPT int inputCount, OPT char** inputVals)
@@ -71,11 +71,10 @@ int main(int argc, char** argv)
     Global::logger.EnableTracing();
     #endif
 
+    Global::wizController = new Wiz::Controller();
+
     initFlags(argc, argv);
 
-    if (Global::wizController == nullptr) {
-        Global::wizController = new Wiz::Controller("");
-    }
 
     // while (1) {
     //     for (int i = 0; i < 255; i+=10) {

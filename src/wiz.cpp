@@ -13,35 +13,47 @@
 #include <string>
 #include <jansson.h>
 
-#include "inactivity_timer.hpp"
 #include "globals.hpp"
+#include "bulb.hpp"
+
+#include "inactivity_timer.hpp"
 #include "skutils/logger/logger.hpp"
 
 
 namespace Wiz
 {
-    Controller::Controller(std::string devicePrefix) : mDevicePrefix(devicePrefix)
+    Controller::~Controller()
     {
         InitBulbs();
     }
 
-    Controller::~Controller()
-    {
-
-    }
-
     void Controller::InitBulbs()
     {
-       mSearchResponses = SearchForBulbs();
+        // Reset the bulb array
+        mBulbs.clear();
+        mSearchResponses = SearchForBulbs();
 
-       for (json_t* resp : mSearchResponses) {
-           const char* ip = json_dumps(resp, JSON_INDENT(2));
-           Global::logger.Log(INFO, ip); 
+        for (json_t* resp : mSearchResponses) {
+            json_t* ipObject = json_object_get(resp, "ip");
+            if (ipObject == nullptr) {
+                Global::logger.Log(ERROR, "Unable to get device IP");
+                continue;
+            }
 
-       }
+            json_t* portObject = json_object_get(resp, "port");
+            if (portObject == nullptr) {
+                Global::logger.Log(ERROR, "Unable to get device Port");
+                continue;
+            }
+
+            std::string ip = json_string_value(ipObject);
+            u_int16_t port = json_integer_value(portObject);
+
+            Bulb* b = new Bulb(ip, port);
+            mBulbs.push_back(b);
+        }
     }
 
-    // TODO: Implement filtering by device prefix
     std::vector<json_t*> Controller::SearchForBulbs() 
     {
         using namespace std::chrono;
@@ -51,9 +63,10 @@ namespace Wiz
         int broadcastEnable = 1;
         setsockopt(sock, SOL_SOCKET, SO_BROADCAST, &broadcastEnable, sizeof(broadcastEnable));
 
+        u_int16_t port = Global::WIZ_UDP_BROADCAST_PORT;
         sockaddr_in addr{};
         addr.sin_family = AF_INET;
-        addr.sin_port = htons(38899);
+        addr.sin_port = htons(port);
         addr.sin_addr.s_addr = inet_addr("255.255.255.255");
 
         const char* msg = "{\"method\":\"getSystemConfig\",\"params\":{}}";
@@ -87,6 +100,7 @@ namespace Wiz
                 }
 
                 json_object_set_new(root, "ip", json_string(devIP.c_str()));
+                json_object_set_new(root, "port", json_string(std::to_string(port).c_str()));
                 jsonRepsonses.push_back(root);
             }
 
@@ -109,17 +123,27 @@ namespace Wiz
         Global::logger.Log(WARNING, "ConfirmBulbChoices: Not implemented");
     }
 
-    // FIXME
-    void Controller::FilterDevicesByHomeID(std::string homeId)
+    std::vector<Bulb*> Controller::FilterDevicesByModulePrefix(std::string prefix)
     {
-        // mHomeId = homeId;
-        Global::logger.Log(WARNING, "FilterDevicesByHomeID: Not implemented");
+        // tmp for now
+        InitBulbs();
+        
+        return mBulbs;
     }
 
     // FIXME
-    void Controller::FilterDevicesByRoomID(std::string roomId)
+    std::vector<Bulb*> Controller::FilterDevicesByHomeID(std::string homeId)
+    {
+        // mHomeId = homeId;
+        Global::logger.Log(WARNING, "FilterDevicesByHomeID: Not implemented");
+        return std::vector<Bulb*>();
+    }
+
+    // FIXME
+    std::vector<Bulb*> Controller::FilterDevicesByRoomID(std::string roomId)
     {
         // mRoomId = roomId;
         Global::logger.Log(WARNING, "FilterDevicesByRoomID: Not implemented");
+        return std::vector<Bulb*>();
     }
 } // Namespace Wiz
