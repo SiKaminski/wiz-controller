@@ -139,7 +139,7 @@ namespace Wiz
                 }
 
                 json_object_set_new(root, "ip", json_string(devIP.c_str()));
-                json_object_set_new(root, "port", json_string(std::to_string(port).c_str()));
+                json_object_set_new(root, "port", json_integer(port));
                 jsonRepsonses.push_back(root);
             }
 
@@ -164,7 +164,9 @@ namespace Wiz
 
     void Controller::ToggleLights()
     {
-        
+        for(Bulb* b : mBulbs) {
+            b->ToggleLight(false);
+        }
     }
 
     std::vector<Bulb*> Controller::FilterDevicesByModulePrefix(std::string prefix)

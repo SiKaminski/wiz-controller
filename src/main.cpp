@@ -75,6 +75,8 @@ int main(int argc, char** argv)
 
     initFlags(argc, argv);
 
+    Global::wizController->ToggleLights();
+
 
     // while (1) {
     //     for (int i = 0; i < 255; i+=10) {

@@ -36,14 +36,14 @@ namespace UDP
         socklen_t len = sizeof(ipAddr);
 
         if (sendto(mBroadcastSocket, msg.c_str(), msgLen, 0, (sockaddr*) &ipAddr, len) != msgLen) {
-            perror("sendto");
+            Global::logger.Log(ERROR, "sendto");
             return "";
         }
         
         char resp[MAXLINE] = {};
         int n = recvfrom(mBroadcastSocket, (char*)resp, MAXLINE, MSG_WAITALL, (sockaddr*) &ipAddr, &len);
         if (n < 0) {
-            perror("recvfrom");
+            Global::logger.Log(ERROR, "UDP recvfrom");
             return resp; 
         }
 
