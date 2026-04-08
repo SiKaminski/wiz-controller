@@ -3,13 +3,11 @@
 #include <jansson.h>
 
 #include "globals.hpp"
-#include "udp.hpp"
 
 
 std::string EMPTY_STRING;
 
-Bulb::Bulb(std::string ip, u_int16_t port) :
-    mDevIP(ip), mPort(port)
+Bulb::Bulb(BulbMeta meta) : mMeta(meta)
 {
     mSocket = UDP::Socket();
 }
@@ -21,13 +19,13 @@ Bulb::~Bulb()
 
 void Bulb::SetDeviceIP(const std::string& ip)
 { 
-    mDevIP = ip;
+    mMeta.Ip = ip.c_str();
 }
 
 
 std::string Bulb::GetDeviceIP()
 {
-    return mDevIP;
+    return mMeta.Ip;
 }
 
 std::string Bulb::Discover(const std::string& ip)
@@ -38,7 +36,7 @@ std::string Bulb::Discover(const std::string& ip)
     std::string msg = json_dumps(root, JSON_COMPACT);
     Global::logger.Log(INFO, "discover request %s to wiz\n", msg.c_str());
     std::string devIP = "yes";
-    auto resp = mSocket.SendUdpCommand(msg, ip, mPort, devIP);
+    auto resp = mSocket.SendUdpCommand(msg, ip, mMeta.Port, devIP);
     return ParseResponse(resp, devIP);
 }
 
@@ -80,7 +78,7 @@ std::string Bulb::ToggleLight(bool state)
     std::string msg = json_dumps(root, JSON_COMPACT);
     Global::logger.Log(INFO, "Light turning [%s]\n", (state ? "ON" : "OFF"));
     Global::logger.Log(INFO, "toggleLight request %s to wiz", msg.c_str());
-    auto resp = mSocket.SendUdpCommand(msg, mDevIP, mPort, EMPTY_STRING);
+    auto resp = mSocket.SendUdpCommand(msg, mMeta.Ip, mMeta.Port, EMPTY_STRING);
     return ParseResponse(resp);
 }
 
@@ -100,7 +98,7 @@ std::string Bulb::SetBrightness(int brightness)
 
     std::string msg = json_dumps(root, JSON_COMPACT);
     Global::logger.Log(INFO, "toggleLight request %s to wiz", msg.c_str());
-    auto resp = mSocket.SendUdpCommand(msg, mDevIP, mPort, EMPTY_STRING);
+    auto resp = mSocket.SendUdpCommand(msg, mMeta.Ip, mMeta.Port, EMPTY_STRING);
     return ParseResponse(resp);
 }
 
@@ -122,7 +120,7 @@ std::string Bulb::SetRGB(ushort r, ushort g, ushort b)
 
     std::string msg = json_dumps(root, JSON_COMPACT);
     Global::logger.Log(INFO, "Change color request %s to wiz", msg.c_str());
-    auto resp = mSocket.SendUdpCommand(msg, mDevIP, mPort, EMPTY_STRING);
+    auto resp = mSocket.SendUdpCommand(msg, mMeta.Ip, mMeta.Port, EMPTY_STRING);
     return ParseResponse(resp);
 }
 

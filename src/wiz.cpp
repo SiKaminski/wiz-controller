@@ -1,3 +1,5 @@
+// FIXME: Fix the double call to the Bulb() contructor in InitBulbs()
+
 #include "wiz.hpp"
 
 #include <bits/types/timer_t.h>
@@ -5,6 +7,7 @@
 #include <cstring>
 #include <arpa/inet.h>
 #include <sys/socket.h>
+#include <sys/types.h>
 #include <thread>
 #include <unistd.h>
 #include <string>
@@ -19,13 +22,15 @@
 #include "inactivity_timer.hpp"
 #include "skutils/logger/logger.hpp"
 
-
 namespace Wiz
 {
-    Controller::~Controller()
+    Controller::Controller()
     {
+        mBulbs = std::vector<Bulb*>();
         InitBulbs();
     }
+
+    Controller::~Controller() { }
 
     void Controller::InitBulbs()
     {
@@ -46,10 +51,44 @@ namespace Wiz
                 continue;
             }
 
-            std::string ip = json_string_value(ipObject);
-            u_int16_t port = json_integer_value(portObject);
+            json_t* resultRoot = json_object_get(resp, "result");
+            if (resultRoot == nullptr) {
+                Global::logger.Log(ERROR, "Unable to get device result information");
+                continue;
+            }
 
-            Bulb* b = new Bulb(ip, port);
+            json_t* moduleNameObject = json_object_get(resultRoot, "moduleName");
+            if (moduleNameObject == nullptr) {
+                Global::logger.Log(ERROR, "Unable to get module name information");
+                continue;
+            }
+
+            // FIXME
+            // json_t* homeIdObject = json_object_get(resultRoot, "homeId");
+            // if (homeIdObject == nullptr) {
+            //     Global::logger.Log(ERROR, "Unable to get device homeId"); 
+            //     continue;
+            // }
+
+            BulbMeta meta = {
+                .Mac = "",
+
+                // FIXME
+                // .HomeID = json_string_value(homeIdObject),
+                .HomeID = "",
+                
+                .RoomID = "",
+                .RGN = "",
+                .ModuleName = json_string_value(moduleNameObject),
+                .FwVersion = "",
+                .GroupID = "",
+                .Ping = "",
+                .Ip = json_string_value(ipObject),
+                .Port = (u_int16_t)json_integer_value(portObject),
+                
+            };
+
+            Bulb* b = new Bulb(meta);
             mBulbs.push_back(b);
         }
     }
@@ -123,12 +162,23 @@ namespace Wiz
         Global::logger.Log(WARNING, "ConfirmBulbChoices: Not implemented");
     }
 
+    void Controller::ToggleLights()
+    {
+        
+    }
+
     std::vector<Bulb*> Controller::FilterDevicesByModulePrefix(std::string prefix)
     {
-        // tmp for now
-        InitBulbs();
-        
-        return mBulbs;
+        std::vector<Bulb*> filtered;
+        for(Bulb* b : mBulbs) {
+            std::string moduleName = b->mMeta.ModuleName;
+            if (moduleName.contains(prefix)) {
+                filtered.push_back(b);
+            }
+        }
+
+        mBulbs = filtered;
+        return filtered;
     }
 
     // FIXME
@@ -147,3 +197,4 @@ namespace Wiz
         return std::vector<Bulb*>();
     }
 } // Namespace Wiz
+  //

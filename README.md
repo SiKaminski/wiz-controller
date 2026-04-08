@@ -1,4 +1,4 @@
-# room-lights
+# Wiz Light Controller
 
 ## Light information
 

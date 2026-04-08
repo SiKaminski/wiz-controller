@@ -7,10 +7,24 @@
 
 #include "udp.hpp"
 
+struct BulbMeta 
+{
+    std::string Mac;
+    std::string HomeID;
+    std::string RoomID;
+    std::string RGN;
+    std::string ModuleName;
+    std::string FwVersion;
+    std::string GroupID;
+    std::string Ping;
+    std::string Ip;
+    u_int16_t Port;
+};
+
 class Bulb
 {
     public:
-        Bulb(std::string ip, u_int16_t port);
+        Bulb(BulbMeta meta);
         ~Bulb();
 
         void SetDeviceIP(const std::string& ip);
@@ -27,13 +41,12 @@ class Bulb
         std::string SetBrightness(int brightness);
         std::string SetRGB(ushort r, ushort g, ushort b);        
 
+        BulbMeta mMeta;
     private:
         std::string ParseResponse(std::string jsonStr, std::string addlParams = "");
         bool ColorInBound(ushort val);
 
         UDP::Socket     mSocket;
-        std::string     mDevIP;
-        u_int16_t       mPort;
 };
 
 #endif // _BULB_HPP_

@@ -16,12 +16,15 @@ namespace Wiz
     class Controller
     {
         public:
+            Controller();
             ~Controller();
 
             void ConfirmBulbChoices();
             std::vector<Bulb*> FilterDevicesByModulePrefix(std::string prefix);
             std::vector<Bulb*> FilterDevicesByHomeID(std::string homeId);
             std::vector<Bulb*> FilterDevicesByRoomID(std::string roomId);
+
+            void ToggleLights();
         private:
             void InitBulbs();
 
