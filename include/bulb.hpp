@@ -4,49 +4,64 @@
 
 #include <string>
 #include <sys/types.h>
+#include <jansson.h>
 
 #include "udp.hpp"
 #include "types.hpp"
 
-struct BulbMeta 
+namespace Wiz::Bulb
 {
-    std::string Mac;
-    std::string HomeID;
-    std::string RoomID;
-    std::string RGN;
-    std::string ModuleName;
-    std::string FwVersion;
-    std::string GroupID;
-    std::string Ping;
-    std::string Ip;
-    u_int16_t Port;
-};
+    struct State
+    {
+        Color*  color;
+        ushort  brightness;
 
-class Bulb
-{
-    public:
-        Bulb(BulbMeta meta);
-        ~Bulb();
+        json_t* ConvertToJson();
+    };
 
-        void SetDeviceIP(const std::string& ip);
-        std::string GetDeviceIP();
+    struct Meta 
+    {
+        std::string Mac;
+        std::string HomeID;
+        std::string RoomID;
+        std::string RGN;
+        std::string ModuleName;
+        std::string FwVersion;
+        std::string GroupID;
+        std::string Ping;
+        std::string Ip;
+        u_int16_t Port;
+    };
 
-        std::string Discover(const std::string& ip);
-        std::string GetStatus();
-        std::string GetDeviceInfo();
-        std::string GetWifiConfig();
-        std::string GetSystemConfig();
-        std::string GetUserConfig();
+    class Device
+    {
+        public:
+            Device(Meta meta);
+            ~Device();
 
-        std::string ToggleLight(bool state);
-        std::string SetBrightness(int brightness);
-        std::string SetRGB(Color color);        
+            void SetDeviceIP(const std::string& ip);
+            std::string GetDeviceIP();
 
-        BulbMeta mMeta;
-    private:
-        std::string ParseResponse(std::string jsonStr, std::string addlParams = "");
+            std::string Discover(const std::string& ip);
+            std::string GetStatus();
+            std::string GetDeviceInfo();
+            std::string GetWifiConfig();
+            std::string GetSystemConfig();
+            std::string GetUserConfig();
 
-        UDP::Socket     mSocket;
-};
+            std::string ToggleLight(bool state);
+            std::string SetBrightness(int brightness);
+            std::string SetRGB(Color color);        
+
+            json_t* StoreState();
+
+            Meta mMeta;
+        private:
+            std::string ParseResponse(std::string jsonStr, std::string addlParams = "");
+
+            UDP::Socket mSocket;
+            State mState;
+    };
+} // namespace Wiz::Bulb
 
 #endif // _BULB_HPP_

@@ -26,7 +26,7 @@ namespace Wiz
 {
     Controller::Controller()
     {
-        mBulbs = std::vector<Bulb*>();
+        mBulbs = std::vector<Bulb::Device*>();
         InitBulbs();
     }
 
@@ -70,7 +70,7 @@ namespace Wiz
             //     continue;
             // }
 
-            BulbMeta meta = {
+            Bulb::Meta meta = {
                 .Mac = "",
 
                 // FIXME
@@ -88,7 +88,7 @@ namespace Wiz
                 
             };
 
-            Bulb* b = new Bulb(meta);
+            Bulb::Device* b = new Bulb::Device(meta);
             mBulbs.push_back(b);
         }
     }
@@ -164,22 +164,22 @@ namespace Wiz
 
     void Controller::ToggleLights()
     {
-        for(Bulb* b : mBulbs) {
+        for(Bulb::Device* b : mBulbs) {
             b->ToggleLight(false);
         }
     }
 
     void Controller::SetColor(Color color)
     {
-        for (Bulb* b : mBulbs) {
+        for (Bulb::Device* b : mBulbs) {
             b->SetRGB(color);
         }
     }
 
-    std::vector<Bulb*> Controller::FilterDevicesByModulePrefix(std::string prefix)
+    std::vector<Bulb::Device*> Controller::FilterDevicesByModulePrefix(std::string prefix)
     {
-        std::vector<Bulb*> filtered;
-        for(Bulb* b : mBulbs) {
+        std::vector<Bulb::Device*> filtered;
+        for(Bulb::Device* b : mBulbs) {
             std::string moduleName = b->mMeta.ModuleName;
             if (moduleName.contains(prefix)) {
                 filtered.push_back(b);
@@ -191,18 +191,18 @@ namespace Wiz
     }
 
     // FIXME
-    std::vector<Bulb*> Controller::FilterDevicesByHomeID(std::string homeId)
+    std::vector<Bulb::Device*> Controller::FilterDevicesByHomeID(std::string homeId)
     {
         // mHomeId = homeId;
         Global::logger.Log(WARNING, "FilterDevicesByHomeID: Not implemented");
-        return std::vector<Bulb*>();
+        return std::vector<Bulb::Device*>();
     }
 
     // FIXME
-    std::vector<Bulb*> Controller::FilterDevicesByRoomID(std::string roomId)
+    std::vector<Bulb::Device*> Controller::FilterDevicesByRoomID(std::string roomId)
     {
         // mRoomId = roomId;
         Global::logger.Log(WARNING, "FilterDevicesByRoomID: Not implemented");
-        return std::vector<Bulb*>();
+        return std::vector<Bulb::Device*>();
     }
 } // Namespace Wiz

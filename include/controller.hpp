@@ -22,9 +22,9 @@ namespace Wiz
             ~Controller();
 
             void ConfirmBulbChoices();
-            std::vector<Bulb*> FilterDevicesByModulePrefix(std::string prefix);
-            std::vector<Bulb*> FilterDevicesByHomeID(std::string homeId);
-            std::vector<Bulb*> FilterDevicesByRoomID(std::string roomId);
+            std::vector<Bulb::Device*> FilterDevicesByModulePrefix(std::string prefix);
+            std::vector<Bulb::Device*> FilterDevicesByHomeID(std::string homeId);
+            std::vector<Bulb::Device*> FilterDevicesByRoomID(std::string roomId);
 
             void ToggleLights();
             void SetColor(Color color);
@@ -34,11 +34,11 @@ namespace Wiz
             // Return bulb json response
             std::vector<json_t*> SearchForBulbs();
 
-            std::vector<Bulb*>      mBulbs; 
-            std::vector<json_t*>    mSearchResponses;
-            std::string             mDevicePrefix;
-            std::string             mHomeId; 
-            std::string             mRoomId; 
+            std::vector<Bulb::Device*>  mBulbs; 
+            std::vector<json_t*>        mSearchResponses;
+            std::string                 mDevicePrefix;
+            std::string                 mHomeId; 
+            std::string                 mRoomId; 
     };
 }
 

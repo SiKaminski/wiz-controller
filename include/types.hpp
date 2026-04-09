@@ -10,7 +10,8 @@ struct Color {
         ushort G;
         ushort B;
 
-        bool Valid() {
+        bool Valid()
+        {
             return R <= 255 && (G <= 255) && B <= 255;
         }
 };
