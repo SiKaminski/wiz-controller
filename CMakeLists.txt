@@ -18,7 +18,7 @@ add_executable(${PROJECT_NAME}
     src/inactivity_timer.cpp
     src/bulb.cpp
     src/udp.cpp
-    src/wiz.cpp
+    src/controller.cpp
     src/main.cpp
 )
 

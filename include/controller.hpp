@@ -1,6 +1,6 @@
 #pragma once
-#ifndef _WIZ_HPP_
-#define _WIZ_HPP_
+#ifndef _WIZ_CONTROLLER_HPP_
+#define _WIZ_CONTROLLER_HPP_
 
 #include "bulb.hpp"
 #include <string>
@@ -39,4 +39,4 @@ namespace Wiz
     };
 }
 
-#endif // _WIZ_HPP_
+#endif // _WIZ_CONTROLLER_HPP_

@@ -18,4 +18,3 @@ class InactivityTimer
 };
 
 #endif // _INACTIVITY_TIMER_HPP
-

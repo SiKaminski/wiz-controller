@@ -2,7 +2,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-#include "wiz.hpp"
+#include "controller.hpp"
 #include "globals.hpp"
 #include "skutils/skutilflagparser.hpp"
 
@@ -76,21 +76,5 @@ int main(int argc, char** argv)
     initFlags(argc, argv);
 
     Global::wizController->ToggleLights();
-
-
-    // while (1) {
-    //     for (int i = 0; i < 255; i+=10) {
-    //         bulbs[0].SetRGB(i, 0, 0);
-    //     }
-
-    //     for (int i = 0; i < 255; i+=10) {
-    //         bulbs[0].SetRGB(0, i, 0);
-    //     }
-
-    //     for (int i = 0; i < 255; i+=10) {
-    //         bulbs[0].SetRGB(0, 0, i);
-    //     }
-    // }
-
     return 0;
 }

@@ -1,6 +1,6 @@
 // FIXME: Fix the double call to the Bulb() contructor in InitBulbs()
 
-#include "wiz.hpp"
+#include "controller.hpp"
 
 #include <bits/types/timer_t.h>
 #include <chrono>
@@ -169,6 +169,8 @@ namespace Wiz
         }
     }
 
+
+
     std::vector<Bulb*> Controller::FilterDevicesByModulePrefix(std::string prefix)
     {
         std::vector<Bulb*> filtered;
@@ -199,4 +201,3 @@ namespace Wiz
         return std::vector<Bulb*>();
     }
 } // Namespace Wiz
-  //

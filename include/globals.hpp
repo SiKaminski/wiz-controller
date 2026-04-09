@@ -2,7 +2,7 @@
 #ifndef _GLOBALS_HPP_
 #define _GLOBALS_HPP_
 
-#include "wiz.hpp"
+#include "controller.hpp"
 #include "skutils/logger/logger.hpp"
 
 namespace Global
