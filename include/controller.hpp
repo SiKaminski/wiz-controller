@@ -3,6 +3,8 @@
 #define _WIZ_CONTROLLER_HPP_
 
 #include "bulb.hpp"
+#include "types.hpp"
+
 #include <string>
 #include <vector>
 #include <jansson.h>
@@ -25,6 +27,7 @@ namespace Wiz
             std::vector<Bulb*> FilterDevicesByRoomID(std::string roomId);
 
             void ToggleLights();
+            void SetColor(Color color);
         private:
             void InitBulbs();
 

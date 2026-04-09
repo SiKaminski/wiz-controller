@@ -75,6 +75,6 @@ int main(int argc, char** argv)
 
     initFlags(argc, argv);
 
-    Global::wizController->ToggleLights();
+    Global::wizController->SetColor({255, 255, 255});
     return 0;
 }

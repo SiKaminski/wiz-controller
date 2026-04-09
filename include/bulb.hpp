@@ -6,6 +6,7 @@
 #include <sys/types.h>
 
 #include "udp.hpp"
+#include "types.hpp"
 
 struct BulbMeta 
 {
@@ -39,12 +40,11 @@ class Bulb
 
         std::string ToggleLight(bool state);
         std::string SetBrightness(int brightness);
-        std::string SetRGB(ushort r, ushort g, ushort b);        
+        std::string SetRGB(Color color);        
 
         BulbMeta mMeta;
     private:
         std::string ParseResponse(std::string jsonStr, std::string addlParams = "");
-        bool ColorInBound(ushort val);
 
         UDP::Socket     mSocket;
 };

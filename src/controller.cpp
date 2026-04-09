@@ -169,7 +169,12 @@ namespace Wiz
         }
     }
 
-
+    void Controller::SetColor(Color color)
+    {
+        for (Bulb* b : mBulbs) {
+            b->SetRGB(color);
+        }
+    }
 
     std::vector<Bulb*> Controller::FilterDevicesByModulePrefix(std::string prefix)
     {

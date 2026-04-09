@@ -1,8 +1,7 @@
 #include "bulb.hpp"
+#include "globals.hpp"
 
 #include <jansson.h>
-
-#include "globals.hpp"
 
 
 std::string EMPTY_STRING;
@@ -102,10 +101,10 @@ std::string Bulb::SetBrightness(int brightness)
     return ParseResponse(resp);
 }
 
-std::string Bulb::SetRGB(ushort r, ushort g, ushort b)
+std::string Bulb::SetRGB(Color color)
 {
     // Check if rgb values are in bound
-    if (!ColorInBound(r) || !ColorInBound(g) || !ColorInBound(b))
+    if (!color.Valid())
         return "Invalid";
 
     json_t* root = json_object();
@@ -113,20 +112,15 @@ std::string Bulb::SetRGB(ushort r, ushort g, ushort b)
     json_object_set_new(root, "method", json_string("setPilot"));
 
     json_t* data = json_object();
-    json_object_set_new(data, "r", json_integer(r));
-    json_object_set_new(data, "g", json_integer(g));
-    json_object_set_new(data, "b", json_integer(b));
+    json_object_set_new(data, "r", json_integer(color.R));
+    json_object_set_new(data, "g", json_integer(color.G));
+    json_object_set_new(data, "b", json_integer(color.B));
     json_object_set_new(root, "params", data);
 
     std::string msg = json_dumps(root, JSON_COMPACT);
     Global::logger.Log(INFO, "Change color request %s to wiz", msg.c_str());
     auto resp = mSocket.SendUdpCommand(msg, mMeta.Ip, mMeta.Port, EMPTY_STRING);
     return ParseResponse(resp);
-}
-
-bool Bulb::ColorInBound(ushort val)
-{
-    return val >= 0 && val <= 255;
 }
 
 std::string Bulb::ParseResponse(std::string jsonStr, std::string addlParams)
