@@ -14,8 +14,8 @@ int main(int argc, char** argv)
 
     Global::wizController = new Wiz::Controller();
 
-    initFlags(argc, argv);
+    InitFlags(argc, argv);
 
-    Global::wizController->SetColor({255, 255, 255});
+    Global::wizController->SetBrightness(10);
     return 0;
 }

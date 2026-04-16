@@ -107,7 +107,7 @@ namespace Wiz::Bulb
     {
         // Check if rgb values are in bound
         if (!color.Valid())
-            return "Invalid";
+            return Global::ERR_BRIGHTNESS_OUT_OF_BOUNDS;
 
         json_t* root = json_object();
         json_object_set_new(root, "id", json_integer(1));

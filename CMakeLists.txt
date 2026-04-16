@@ -19,6 +19,7 @@ add_executable(${PROJECT_NAME}
     src/bulb.cpp
     src/udp.cpp
     src/controller.cpp
+    src/cliflags.cpp
     src/main.cpp
 )
 

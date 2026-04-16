@@ -8,6 +8,6 @@ void InitWizControllerPrefixed(OPT int inputCount, OPT char** inputVals);
 void FilterDevicesWithHomeID(OPT int inputCount, OPT char** inputVals);
 void FilterDevicesWithRoomID(OPT int inputCount, OPT char** inputVals);
 void ConfirmBulbSelection(OPT int inputCount, OPT char** inputVals);
-void initFlags(int argc, char** argv);
+void InitFlags(int argc, char** argv);
 
 #endif // _CLIFLAGS_HPP_

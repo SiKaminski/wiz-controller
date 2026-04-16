@@ -7,6 +7,8 @@
 
 namespace Global
 {
+    inline const char* ERR_BRIGHTNESS_OUT_OF_BOUNDS = "Brightness out of bounds";
+
     constexpr u_int16_t WIZ_UDP_BROADCAST_PORT {38899};
 
     inline Wiz::Controller* wizController = nullptr;

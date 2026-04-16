@@ -56,7 +56,7 @@ void ConfirmBulbSelection(OPT int inputCount, OPT char** inputVals)
     Global::wizController->ConfirmBulbChoices();
 }
 
-void initFlags(int argc, char** argv)
+void InitFlags(int argc, char** argv)
 {
     FlagParser parser(&flags);
     parser.ParseFlags(argc, argv);

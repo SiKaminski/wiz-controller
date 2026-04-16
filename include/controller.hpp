@@ -28,6 +28,11 @@ namespace Wiz
 
             void ToggleLights();
             void SetColor(Color color);
+            void SetBrightness(ushort brightness);
+
+            // Update the state of bulbs, return the new state across all bulbs
+            // Bulb::State UpdateAllBulbStates(const Color* color, const ushort* brightness);
+
         private:
             void InitBulbs();
 

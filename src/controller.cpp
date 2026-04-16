@@ -176,6 +176,15 @@ namespace Wiz
         }
     }
 
+    void Controller::SetBrightness(ushort brightness)
+    {
+        for (Bulb::Device*b : mBulbs) {
+            std::string res = b->SetBrightness(brightness);
+            // if (res = Global::ERR_BRIGHTNESS_OUT_OF_BOUNDS)
+        }
+    }
+
+
     std::vector<Bulb::Device*> Controller::FilterDevicesByModulePrefix(std::string prefix)
     {
         std::vector<Bulb::Device*> filtered;

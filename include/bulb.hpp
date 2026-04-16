@@ -11,6 +11,18 @@
 
 namespace Wiz::Bulb
 {
+    enum Error {
+        BRIGHTNESS_OUT_OF_BOUNDS,
+        COLOR_OUT_OF_BOUNDS
+    };
+
+    struct Result {
+        Error*          err; 
+        std::string*    msg;
+
+        // inline bool operator==(const Result& lhs, const Result& rhs) { return (lhs.err == rhs.err);}
+    };
+
     struct State
     {
         Color*  color;
